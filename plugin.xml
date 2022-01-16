@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:window?after=show_view_append">
+         <command
+               commandId="com.archimatetool.recommender.showRecommenderView"
+               id="com.archimatetool.recommender.showRecommenderView"
+               label="Recommender"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:toolbar_views?after=append">
+         <command
+               commandId="com.archimatetool.recommender.showRecommenderView"
+               id="com.archimatetool.recommender.showRecommenderView"
+               label="Recommender"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.archimatetool.recommender.ShowRecommenderPluginHandler"
+            id="com.archimatetool.recommender.showRecommenderView"
+            name="Recommender">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.archimatetool.recommender.RecommenderView"
+            id="com.archimatetool.recommender.recommenderView"
+            name="%view.name"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <view
+               id="com.archimatetool.recommender.recommenderView"
+               minimized="false"
+               relationship="stack"
+               relative="com.archimatetool.editor.propertiesView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
