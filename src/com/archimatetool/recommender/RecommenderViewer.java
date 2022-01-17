@@ -2,7 +2,6 @@ package com.archimatetool.recommender;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -15,11 +14,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.IWorkbenchPart;
 
-import com.archimatetool.editor.ui.ArchiLabelProvider;
 import com.archimatetool.editor.ui.UIUtils;
-import com.archimatetool.model.INameable;
 
 public class RecommenderViewer extends TreeViewer {
 
@@ -66,6 +62,12 @@ public class RecommenderViewer extends TreeViewer {
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
+			
+			if(parentElement instanceof IRecord) {
+                return ((IRecord)parentElement).getRecommendations().toArray();
+            }
+			
+			
 			if (parentElement instanceof List<?>) {
 				return ((List<?>) parentElement).toArray();
 			}
@@ -89,8 +91,8 @@ public class RecommenderViewer extends TreeViewer {
 
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
-			if (columnIndex == 0) {
-				return ArchiLabelProvider.INSTANCE.getImage(element);
+			if (columnIndex==0 && element instanceof IRecord) {
+				return ((IRecord) element).getImage();
 
 			}
 			return null;
@@ -101,13 +103,19 @@ public class RecommenderViewer extends TreeViewer {
 			
 			switch(columnIndex) {
 			
-			case 0 : if(element instanceof INameable) {
-					return ((INameable) element).getName();
+			case 0 : if(element instanceof IRecord) {
+					return ((IRecord) element).getName();
+					} else if(element instanceof IRecommendation) {
+						return ((IRecommendation) element).getName();
 					}
 					
-			case 1 : return "Recommended Object";
+			case 1 : if(element instanceof IRecommendation) {
+				return String.valueOf(((IRecommendation) element).getSimilarityScore());
+				};
 			
-			case 2: return String.valueOf(100);
+			case 2: if(element instanceof IRecommendation) {
+				return ((IRecommendation) element).getDescription();
+				};
 				
 			default: return null;
 			}		

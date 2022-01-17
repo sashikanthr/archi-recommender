@@ -5,17 +5,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:window?after=show_view_append">
-         <command
-               commandId="com.archimatetool.recommender.showRecommenderView"
-               id="com.archimatetool.recommender.showRecommenderView"
-               label="Recommender"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:toolbar_views?after=append">
+            locationURI="toolbar:toolbar_views?after=com.archimatetool.help.toolbaritem.showHintsView">
          <command
                commandId="com.archimatetool.recommender.showRecommenderView"
                id="com.archimatetool.recommender.showRecommenderView"
@@ -37,21 +27,9 @@
       <view
             class="com.archimatetool.recommender.RecommenderView"
             id="com.archimatetool.recommender.recommenderView"
-            name="%view.name"
+            name="Recommender"
             restorable="true">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="*">
-         <view
-               id="com.archimatetool.recommender.recommenderView"
-               minimized="false"
-               relationship="stack"
-               relative="com.archimatetool.editor.propertiesView">
-         </view>
-      </perspectiveExtension>
    </extension>
 
 </plugin>
