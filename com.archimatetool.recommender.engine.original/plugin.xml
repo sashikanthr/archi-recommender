@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:toolbar_views?after=com.archimatetool.help.toolbaritem.showHintsView">
+         <command
+               commandId="com.archimatetool.recommender.showRecommenderView"
+               id="com.archimatetool.recommender.showRecommenderView"
+               label="Recommender"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.archimatetool.recommender.ShowRecommenderPluginHandler"
+            id="com.archimatetool.recommender.showRecommenderView"
+            name="Recommender">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.archimatetool.recommender.RecommenderView"
+            id="com.archimatetool.recommender.recommenderView"
+            name="Recommender"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.archimatetool.recommender.RecommenderPreferencePage"
+            id="com.archimatetool.recommender.RecommenderPreferencePage"
+            name="Recommender">
+      </page>
+   </extension>
+
+</plugin>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui
+Bundle-SymbolicName: com.archimatetool.recommender.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sashikanth Raavikanti
+Automatic-Module-Name: com.archimatetool.recommender.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: com.archimatetool.recommender.engine;bundle-version="1.0.0",
+ org.eclipse.help.ui;bundle-version="4.3.200",
+ com.archimatetool.editor;bundle-version="4.9.2"
+Bundle-ActivationPolicy: lazy

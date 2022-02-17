@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Connector
+Bundle-SymbolicName: com.archimatetool.recommender.connector;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sashikanth Raavikanti
+Automatic-Module-Name: com.archimatetool.recommender.connector
+Bundle-RequiredExecutionEnvironment: JavaSE-11

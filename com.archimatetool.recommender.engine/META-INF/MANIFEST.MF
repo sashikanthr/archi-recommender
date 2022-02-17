@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Engine
+Bundle-SymbolicName: com.archimatetool.recommender.engine;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sashikanth Raavikanti
+Automatic-Module-Name: com.archimatetool.recommender.engine
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: com.archimatetool.recommender.engine
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.24.0",
+ org.eclipse.e4.core.di;bundle-version="1.8.100",
+ com.archimatetool.editor;bundle-version="4.9.2",
+ javax.inject;bundle-version="1.0.0"
