@@ -1,9 +1,13 @@
 package com.archimatetool.recommender.engine;
 
+import java.util.List;
+
 public interface Recommendation {
 	
 	Object getSelection();
 	
-	Object getResult();	
+	List<? extends Object> getResult();
+	
+	<T extends Object> void addRecommendation(T t);
 
 }

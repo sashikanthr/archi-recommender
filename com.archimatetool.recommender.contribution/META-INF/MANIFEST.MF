@@ -1,10 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Contribution
+Bundle-Name: Archi Recommender Plugin
 Bundle-SymbolicName: com.archimatetool.recommender.contribution;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Sashikanth Raavikanti
 Automatic-Module-Name: com.archimatetool.recommender.contribution
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: com.archimatetool.recommender.engine;bundle-version="1.0.0",
- org.eclipse.core.runtime;bundle-version="3.24.0"
+ org.eclipse.core.runtime;bundle-version="3.24.0",
+ com.archimatetool.recommender.ui;bundle-version="1.0.0",
+ com.archimatetool.editor;bundle-version="4.9.2",
+ org.eclipse.help.ui;bundle-version="4.3.200",
+ com.archimatetool.recommender.connector;bundle-version="1.0.0",
+ javax.inject;bundle-version="1.0.0",
+ com.google.gson;bundle-version="2.8.5"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.archimatetool.recommender.contribution.ArchiRecommenderPlugin

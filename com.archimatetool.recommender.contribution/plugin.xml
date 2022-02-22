@@ -2,10 +2,34 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="com.archimatetool.recommender.engine.Recommender">
-      <contributor
-            class="com.archimatetool.recommender.contribution.ComponentRecommender">
-      </contributor>
+         point="org.eclipse.ui.views">
+      <view
+            class="com.archimatetool.recommender.contribution.ComponentView"
+            id="com.archimatetool.recommender.contribution.componentRecommenderView"
+            name="Recommender"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.archimatetool.recommender.contribution.ComponentRecommenderPluginHandler"
+            id="com.archimatetool.recommender.contribution.showComponentRecommenderView"
+            name="Recommender">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:toolbar_views?after=com.archimatetool.help.toolbaritem.showHintsView">
+         <command
+               commandId="com.archimatetool.recommender.contribution.showComponentRecommenderView"
+               id="com.archimatetool.recommender.contribution.showComponentRecommenderView"
+               label="Recommender"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

@@ -1,34 +1,37 @@
-package com.archimatetool.recommender;
+package com.archimatetool.recommender.contribution;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.help.HelpSystem;
-import org.eclipse.help.IContext;
-import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-
 import com.archimatetool.editor.ArchiPlugin;
 import com.archimatetool.editor.model.IEditorModelManager;
+import com.archimatetool.model.IArchimateConcept;
 import com.archimatetool.model.IArchimateModel;
+import com.archimatetool.recommender.engine.Recommendation;
+import com.archimatetool.recommender.engine.Recommender;
+import com.archimatetool.recommender.ui.RecommenderView;
 
-public class RecommenderView extends ViewPart implements IRecommenderView, ISelectionListener, PropertyChangeListener, IContextProvider, ITabbedPropertySheetPageContributor {
+public class ComponentView extends RecommenderView {
 	
-	private RecommenderViewer fViewer;
+	//TODO Setup Help ID
+	private static final String HELP_ID = null;
+
+	private ComponentViewer fViewer;
 	
 	private IArchimateModel fModel;
 	
@@ -55,15 +58,12 @@ public class RecommenderView extends ViewPart implements IRecommenderView, ISele
 		
 		if(part == this || part == null) {
 			return;
-		}
+		}	
 		
-		IArchimateModel model = part.getAdapter(IArchimateModel.class);
-		
-		if(model!=null) {
-			fModel = model;
-		}
-		
-		initializeRecommendations();
+		if(selection instanceof IStructuredSelection && !selection.isEmpty()) {
+            Object object = ((IStructuredSelection)selection).getFirstElement();
+            initializeRecommendations(object);
+        }		
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class RecommenderView extends ViewPart implements IRecommenderView, ISele
 		Composite treeComp = new Composite(parent, SWT.NULL);
 		treeComp.setLayout(new TreeColumnLayout());
 		treeComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-		fViewer = new RecommenderViewer(treeComp, SWT.NULL);
+		fViewer = new ComponentViewer(treeComp, SWT.NULL);
 		fViewer.addDoubleClickListener(new IDoubleClickListener() {
 			
 			@Override
@@ -97,25 +97,49 @@ public class RecommenderView extends ViewPart implements IRecommenderView, ISele
 		
 		IEditorModelManager.INSTANCE.addPropertyChangeListener(this);
 		
-		selectionChanged(getSite().getWorkbenchWindow().getPartService().getActivePart(), getSite().getWorkbenchWindow().getSelectionService().getSelection());
-		
-		initializeRecommendations();		
+		selectionChanged(getSite().getWorkbenchWindow().getPartService().getActivePart(), getSite().getWorkbenchWindow().getSelectionService().getSelection());	
+				
 		
 	}
 
-	public void initializeRecommendations() {
+	public void initializeRecommendations(Object object) {
 		
 		BusyIndicator.showWhile(null, new Runnable() {
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
-				Recommender recommender = new Recommender(fModel);
-				List<Object> result = recommender.showRecommendations();
-				fViewer.setInput(result);
-				fViewer.expandAll();
+				IArchimateConcept concept = getConceptObject(object);
+				if(concept!=null) {
+				Recommender recommender = new ComponentRecommender(concept);
+				Object result = recommender.getRecommendations();
+				if(result instanceof CompletableFuture<?>) {
+					((CompletableFuture<Recommendation>) result).whenComplete((recommendation, error) -> {
+						if(error==null && recommendation!=null) {
+						fViewer.setInput(recommendation);
+						fViewer.expandAll();
+						}
+					});
+				}
+				}
 			}
 		});
 		
+	}
+	
+	
+	private IArchimateConcept getConceptObject(Object object) {
+		
+		IArchimateConcept concept = null;
+		
+		if(object instanceof IArchimateConcept) {
+            concept = (IArchimateConcept)object;
+        }
+        else if(object instanceof IAdaptable) {
+            concept = ((IAdaptable)object).getAdapter(IArchimateConcept.class);
+        }
+		
+		return concept;
 	}
 
 	@Override
@@ -136,13 +160,13 @@ public class RecommenderView extends ViewPart implements IRecommenderView, ISele
 	}
 
 	@Override
-	public IContext getContext(Object target) {
+	public org.eclipse.help.IContext getContext(Object target) {
 		return HelpSystem.getContext(HELP_ID);
 	}
 
 	@Override
 	public String getSearchExpression(Object target) {
-		return Messages.IRecommender;
+		return Messages.Recommender;
 	}
 	
     @Override
