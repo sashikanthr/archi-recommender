@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Sashikanth Raavikanti
 Automatic-Module-Name: com.archimatetool.recommender.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Bundle: com.archimatetool.recommender.engine;bundle-version="1.0.0",
+Require-Bundle: com.archimatetool.recommender.model;bundle-version="1.0.0",
  com.archimatetool.editor;bundle-version="4.9.2",
  org.eclipse.core.runtime;bundle-version="3.24.0",
  javax.inject;bundle-version="1.0.0",

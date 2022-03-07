@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.http.client.utils.URIBuilder;
 
-public class ConnectorImpl implements Connector {
+public class HttpConnector implements Connector {
 
 	private HttpClient client;
 
@@ -25,14 +25,14 @@ public class ConnectorImpl implements Connector {
 	
 	URI uri;
 	
-	public ConnectorImpl(URI uri) {
+	public HttpConnector(URI uri) {
 		this.uri = uri;
 	}
 	
 
 	@Override
 	public void send() {
-		sendSync();
+		sendAsync();
 	}
 	
 	/*
@@ -66,8 +66,8 @@ public class ConnectorImpl implements Connector {
 	 */
 	
 	
-	private void sendAsync() {
-		
+	private void sendAsync() {		
+			
 			client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(1)).build();
 			request = HttpRequest.newBuilder().uri(uri).timeout(Duration.ofMinutes(1)).header("Accept", "application/json")
 					.build();
@@ -75,9 +75,11 @@ public class ConnectorImpl implements Connector {
 			futureResponse.whenComplete((response, error) -> {
 				if (error == null && response != null && HttpURLConnection.HTTP_OK == response.statusCode()) {
 					String body = response.body();
-					ConnectorService connectorService = ConnectorService.getInstance();								
+					ConnectorService connectorService = ConnectorService.getInstance();					
 					connectorService.sendResponse(uri, body);				
 					
+				} else if(error!=null) {
+					throw new RuntimeException("Unable to connect");
 				}
 			});			
 			
@@ -92,7 +94,7 @@ public class ConnectorImpl implements Connector {
 	public static void main(String[] args) {
 
 		try {
-		Connector connector = new ConnectorImpl(new URIBuilder("http://localhost:8080/recommendations").addParameter("id", "id-2b4d61b061724b9198fcbc626f44b5df" ).build());
+		Connector connector = new HttpConnector(new URIBuilder("http://localhost:8080/recommendations").addParameter("id", "id-2b4d61b061724b9198fcbc626f44b5df" ).build());
 		connector.send();
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.archimatetool.recommender.engine;
+package com.archimatetool.recommender.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

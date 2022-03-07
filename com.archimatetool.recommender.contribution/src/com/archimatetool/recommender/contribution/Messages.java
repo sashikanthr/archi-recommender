@@ -8,9 +8,9 @@ public class Messages extends NLS {
     
     public static String Recommender;
     
-    public static String Recommender_Object_Type;
+    public static String Recommendation_Documentation;
     
-    public static String Recommender_Object_Name;
+    public static String Recommendation_Name;
     
     public static String Recommender_Similarity_Score;
     

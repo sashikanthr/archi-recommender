@@ -9,7 +9,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 public class ConnectorService {
 
-	Map<URI, ConnectSubscriber> subscriberMap = new HashMap<>();
+	Map<URI, RecommendationSubscriber> subscriberMap = new HashMap<>();
 
 	private static ConnectorService connectorService;
 
@@ -24,18 +24,18 @@ public class ConnectorService {
 
 	public void sendResponse(URI uri, String response) {
 
-		if (subscriberMap.containsKey(uri)) {
+		if (subscriberMap.containsKey(uri)) {			
 			subscriberMap.get(uri).receive(response);
 		}
 
 		subscriberMap.remove(uri);
 	}
 
-	public void addSubscriber(ConnectSubscriber subscriber, String id) {
+	public void addSubscriber(RecommendationSubscriber subscriber, String id) {
 		try {
 
 			URI uri = new URIBuilder("http://localhost:8080/recommendations").addParameter("id", id).build();
-			Connector connector = new ConnectorImpl(uri);
+			Connector connector = new HttpConnector(uri);
 			subscriberMap.put(uri, subscriber);
 			connector.setURI(uri);
 			connector.send();			

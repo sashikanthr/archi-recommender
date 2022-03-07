@@ -4,53 +4,58 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.archimatetool.model.IArchimateConcept;
-import com.archimatetool.recommender.connector.ConnectSubscriber;
+import com.archimatetool.model.IArchimateModelObject;
+import com.archimatetool.recommender.connector.RecommendationSubscriber;
 import com.archimatetool.recommender.connector.ConnectorService;
-import com.archimatetool.recommender.engine.Recommendation;
-import com.archimatetool.recommender.engine.Recommender;
+import com.archimatetool.recommender.model.CompletableRecommender;
+import com.archimatetool.recommender.model.Recommendation;
 
-public class ComponentRecommender implements Recommender, ConnectSubscriber {
+public class ComponentRecommender implements CompletableRecommender, RecommendationSubscriber {
 	
 	private ConnectorService connectService;
 	
-	Recommendation recommendation;	
-	
 	IArchimateConcept concept;
 	
-	CompletableFuture<Recommendation> completedRecommendation;
+	CompletableFuture<List<Recommendation>> completedRecommendation;
+	
+	List<Recommendation> recommendations;
 
 	public ComponentRecommender(IArchimateConcept concept) {
-		this.concept = concept;
-		recommendation = new ComponentRecommendation(concept);
-		
+		this.concept = concept;		
 	}
 
-	@Override
-	public Object getRecommendations() {
-		
+	public CompletableFuture<List<Recommendation>> getCompletableFutureRecommendations() {		
 		completedRecommendation = new CompletableFuture<>();		
 		subscribe(this, concept.getId());
 		return completedRecommendation;
 	}
 
 	@Override
-	public void subscribe(ConnectSubscriber subscriber, String id) {
-		
+	public void subscribe(RecommendationSubscriber subscriber, String id) {		
 		ensureConnectService();
 		connectService.addSubscriber(this,id);
 	}
 
 	@Override
-	public void receive(String response) {
+	public void receive(String response) {				
 		
-		List<RecommendedComponent> components = RecommendationJSONParser.parseJson(response);
-		components.forEach(recommendation::addRecommendation);
-		completedRecommendation.complete(recommendation);
+		recommendations = RecommendationJSONParser.parseJson(response);		
+		completedRecommendation.complete(recommendations);		
 	}
 	
 	void ensureConnectService() {
 		if(connectService==null) {
 		connectService = ConnectorService.getInstance();
 		}
+	}
+
+	@Override
+	public IArchimateModelObject getSelection() {
+		return concept;
+	}
+
+	@Override
+	public List<Recommendation> getRecommendations() {
+		return recommendations;
 	}
 }

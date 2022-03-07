@@ -1,35 +1,30 @@
 package com.archimatetool.recommender.contribution;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import com.archimatetool.model.IArchimateConcept;
-import com.archimatetool.recommender.engine.Recommendation;
+import com.archimatetool.recommender.model.Recommendation;
 
 public class ComponentRecommendation implements Recommendation {
 	
-	private IArchimateConcept selection;
+
+	private double score;
 	
-	private List<RecommendedComponent> recommendations;
+	private IArchimateConcept component;
 	
-	public ComponentRecommendation(IArchimateConcept concept) {
-		this.selection = concept;
-		recommendations = new ArrayList<>();
-	}
-	
-	@Override
-	public Object getSelection() {
-		return selection;
+	public ComponentRecommendation(IArchimateConcept concept, double score) {
+		
+		this.component = concept;
+		this.score = score;
 	}
 
-	@Override
-	public List<? extends Object> getResult() {
-		return recommendations;
-	}
+
+	public double getScore() {
+		return score;
+	}	
 
 	@Override
-	public <T> void addRecommendation(T t) {
-		recommendations.add((RecommendedComponent) t);
+	public Object getRecommendation() {
+		return component;
 	}
-
 }

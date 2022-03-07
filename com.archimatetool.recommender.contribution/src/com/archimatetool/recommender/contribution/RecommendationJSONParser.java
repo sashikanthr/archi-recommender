@@ -1,38 +1,73 @@
 package com.archimatetool.recommender.contribution;
 
-
+import com.archimatetool.editor.model.IEditorModelManager;
+import com.archimatetool.model.IArchimateConcept;
+import com.archimatetool.model.IArchimateModel;
+import com.archimatetool.model.util.ArchimateModelUtils;
+import com.archimatetool.recommender.model.Recommendation;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.eclipse.emf.ecore.EObject;
 
 public class RecommendationJSONParser {
-	
-	public static List<RecommendedComponent> parseJson(String body) {
-		
-		
-		List<RecommendedComponent> recommendations = new ArrayList<>();
+
+	public static List<Recommendation> parseJson(String body) {
+
+		List<Recommendation> recommendations = new ArrayList<>();
 		JsonArray array = new JsonParser().parse(body).getAsJsonArray();
 		array.forEach(element -> {
 			JsonObject object = element.getAsJsonObject();
-			if(object.isJsonObject() && object.has("component")) {
-				RecommendedComponent component = new RecommendedComponent();
+			if (object.isJsonObject() && object.has("component")) {
+
 				JsonObject componentAttrib = object.get("component").getAsJsonObject();
-				component.setName(componentAttrib.get("name").getAsString());				
-				component.setType(componentAttrib.get("type").getAsString());
-				component.setId(componentAttrib.get("id").getAsString());
-				if(object.has("score")) {
-					component.setScore(object.get("score").getAsDouble());
+				String compId = componentAttrib.get("id").getAsString();
+				String modelId = componentAttrib.get("modelId").getAsString();
+				double score;
+
+				if (object.has("score")) {
+					score = object.get("score").getAsDouble();
 				} else {
-					component.setScore(0.0);
+					score = 0.0;
 				}
-				
-				recommendations.add(component);
+
+				if (modelId != null && !modelId.isEmpty()) {
+					IArchimateModel model = findModelById(modelId.trim());
+					if (model != null) {
+						IArchimateConcept concept = findComponent(model, compId);
+						Recommendation component = new ComponentRecommendation(concept, score);
+						recommendations.add(component);
+					}
+				}
+
 			}
-		});		
+		});
 		return recommendations;
 	}
-	
+
+	private static IArchimateModel findModelById(String id) {
+
+		Optional<IArchimateModel> model = IEditorModelManager.INSTANCE.getModels().stream()
+				.filter(m -> m.getId().equals(id)).findFirst();
+		if (model.isPresent()) {
+			return model.get();
+		}
+
+		return null;
+	}
+
+	private static IArchimateConcept findComponent(IArchimateModel model, String id) {
+		EObject object = ArchimateModelUtils.getObjectByID(model, id);
+		if (object != null && object instanceof IArchimateConcept) {
+			return (IArchimateConcept) object;
+		}
+
+		return null;
+	}
+
 }
