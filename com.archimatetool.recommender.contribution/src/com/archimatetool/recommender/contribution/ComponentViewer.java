@@ -25,7 +25,7 @@ import com.archimatetool.recommender.model.Recommender;
 public class ComponentViewer extends TreeViewer {
 
 	private String[] columnNames = { Messages.Recommendation_Name, Messages.Recommendation_Documentation,
-			Messages.Recommender_Similarity_Score, };
+			Messages.Recommendation_Similarity_Score, };
 
 	private int[] columnWeights = { 20, 20, 60 };
 

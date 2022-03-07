@@ -12,7 +12,15 @@ public class Messages extends NLS {
     
     public static String Recommendation_Name;
     
-    public static String Recommender_Similarity_Score;
+    public static String Recommendation_Similarity_Score;
+    
+    public static String Recommendation_Action_Reveal_Object;
+    
+    public static String Recommendation_Action_Replace_Object;
+    
+    public static String Recommendation_Command_Rename;
+    
+    public static String Recommendation_Action_Replace_Object_Tooltip;
     
     
     static {

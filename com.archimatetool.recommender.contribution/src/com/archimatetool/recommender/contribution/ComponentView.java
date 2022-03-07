@@ -4,17 +4,21 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.help.HelpSystem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.archimatetool.editor.ArchiPlugin;
@@ -22,7 +26,6 @@ import com.archimatetool.editor.model.IEditorModelManager;
 import com.archimatetool.model.IArchimateConcept;
 import com.archimatetool.model.IArchimateModel;
 import com.archimatetool.recommender.model.CompletableRecommender;
-import com.archimatetool.recommender.model.Recommender;
 import com.archimatetool.recommender.ui.RecommenderView;
 
 public class ComponentView extends RecommenderView {
@@ -33,6 +36,8 @@ public class ComponentView extends RecommenderView {
 	private ComponentViewer fViewer;
 
 	private IArchimateModel fModel;
+	
+	private ComponentViewActions actions;
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -43,16 +48,13 @@ public class ComponentView extends RecommenderView {
 		if (propertyName == IEditorModelManager.PROPERTY_MODEL_REMOVED) {
 			if (fModel == newValue) {
 				fModel = null;
-				fViewer.setInput(null);
-				// fActionValidate.setEnabled(false); TODO - This should correspond to the
-				// recommend action
+				fViewer.setInput(null);				
 			}
 		}
-
 	}
 
 	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {		
 
 		if (part == this || part == null) {
 			return;
@@ -66,28 +68,20 @@ public class ComponentView extends RecommenderView {
 
 	@Override
 	public void createPartControl(Composite parent) {
-
+		actions = new ComponentViewActions(this);
+		actions.makeActions();
 		Composite treeComp = new Composite(parent, SWT.NULL);
 		treeComp.setLayout(new TreeColumnLayout());
 		treeComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-		fViewer = new ComponentViewer(treeComp, SWT.NULL);
+		fViewer = new ComponentViewer(treeComp, SWT.NULL);		
 		fViewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				System.out.println("In the double click listener");
+				actions.selectObjects((IStructuredSelection) event.getSelection());
 			}
 
-		});
-
-		fViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				System.out.println("In the selection changed listener");
-
-			}
-		});
+		});	
 
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
@@ -97,8 +91,42 @@ public class ComponentView extends RecommenderView {
 
 		selectionChanged(getSite().getWorkbenchWindow().getPartService().getActivePart(),
 				getSite().getWorkbenchWindow().getSelectionService().getSelection());
+		
+		hookContextMenu();
 
 	}
+	
+	
+    private void hookContextMenu() {
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        
+        menuMgr.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                fillContextMenu(manager);
+            }
+        });
+        
+        Menu menu = menuMgr.createContextMenu(getViewer().getControl());
+        getViewer().getControl().setMenu(menu);        
+        getSite().registerContextMenu(menuMgr, getViewer());
+    }
+    
+    
+    private void fillContextMenu(IMenuManager manager) {    
+    	actions.getActions().forEach(a -> {
+    		if(a.getText().equals(Messages.Recommendation_Action_Replace_Object)) {
+    			IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
+    			if(selection.toArray().length > 1) {
+    				a.setEnabled(false);
+    			}    			
+    		}
+    		manager.add(a);
+    		manager.add(new Separator());
+    	});       
+        
+     }
 
 	public void initializeRecommendations(Object object) {
 
@@ -111,25 +139,6 @@ public class ComponentView extends RecommenderView {
 					CompletableRecommender recommender = new ComponentRecommender(concept);
 					fViewer.setInput(recommender);
 					fViewer.expandAll();
-				}
-			}
-		});
-
-	}
-
-	public void initializeRecommendations_old(Object object) {
-
-		BusyIndicator.showWhile(null, new Runnable() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void run() {
-				IArchimateConcept concept = getConceptObject(object);
-				if (concept != null) {
-					Recommender recommender = new ComponentRecommender(concept);
-					Object result = recommender.getRecommendations();
-					fViewer.setInput(result);
-					fViewer.expandAll();					
 				}
 			}
 		});
@@ -186,6 +195,11 @@ public class ComponentView extends RecommenderView {
 
 		// Unregister us as a Model Manager Listener
 		IEditorModelManager.INSTANCE.removePropertyChangeListener(this);
+	}
+
+	@Override
+	public TreeViewer getViewer() {
+		return fViewer;
 	}
 
 }
