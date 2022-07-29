@@ -23,7 +23,11 @@ public class HttpConnector implements Connector {
 
 	// TODO - URL endpoint defined in Preferences or maintain an init file
 	
-	URI uri;
+	private URI uri;
+	
+	public HttpConnector() {
+		
+	}
 	
 	public HttpConnector(URI uri) {
 		this.uri = uri;
@@ -32,7 +36,7 @@ public class HttpConnector implements Connector {
 
 	@Override
 	public void send() {
-		sendAsync();
+		sendSync();
 	}
 	
 	/*
@@ -40,24 +44,24 @@ public class HttpConnector implements Connector {
 	 */
 	
 	private void sendSync() {
+		ConnectorService connectorService = ConnectorService.getInstance();	
 		try {						
 			client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(1)).build();
-			request = HttpRequest.newBuilder().uri(uri).timeout(Duration.ofMinutes(1)).header("Accept", "application/json")
+			request = HttpRequest.newBuilder().uri(uri).timeout(Duration.ofSeconds(5)).header("Accept", "application/json")
 					.build();
 			response = client.send(request, BodyHandlers.ofString());
 			
 			
 				if (response != null && HttpURLConnection.HTTP_OK == response.statusCode()) {
 					String body = response.body();
-					ConnectorService connectorService = ConnectorService.getInstance();								
+												
 					connectorService.sendResponse(uri, body);			
 					
 				}
 			
 			
 			} catch (IOException | InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				connectorService.sendResponse(uri,"[]");
 			}
 	}
 	

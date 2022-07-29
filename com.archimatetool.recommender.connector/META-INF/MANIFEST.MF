@@ -8,3 +8,4 @@ Automatic-Module-Name: com.archimatetool.recommender.connector
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: com.archimatetool.recommender.connector
 Require-Bundle: org.apache.httpcomponents.httpclient
+Bundle-ActivationPolicy: lazy

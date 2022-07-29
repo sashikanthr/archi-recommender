@@ -40,6 +40,10 @@ public class RecommendationJSONParser {
 					IArchimateModel model = findModelById(modelId.trim());
 					if (model != null) {
 						IArchimateConcept concept = findComponent(model, compId);
+						if(concept==null) {
+							concept = findComponent(model, compId.replaceFirst("id-", ""));
+						}
+					
 						Recommendation component = new ComponentRecommendation(concept, score);
 						recommendations.add(component);
 					}

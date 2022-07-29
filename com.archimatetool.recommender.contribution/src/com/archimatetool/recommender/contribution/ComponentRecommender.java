@@ -14,11 +14,11 @@ public class ComponentRecommender implements CompletableRecommender, Recommendat
 	
 	private ConnectorService connectService;
 	
-	IArchimateConcept concept;
+	private IArchimateConcept concept;
 	
-	CompletableFuture<List<Recommendation>> completedRecommendation;
+	private CompletableFuture<List<Recommendation>> completedRecommendation;
 	
-	List<Recommendation> recommendations;
+	private List<Recommendation> recommendations;
 
 	public ComponentRecommender(IArchimateConcept concept) {
 		this.concept = concept;		
@@ -43,7 +43,7 @@ public class ComponentRecommender implements CompletableRecommender, Recommendat
 		completedRecommendation.complete(recommendations);		
 	}
 	
-	void ensureConnectService() {
+	private void ensureConnectService() {
 		if(connectService==null) {
 		connectService = ConnectorService.getInstance();
 		}
