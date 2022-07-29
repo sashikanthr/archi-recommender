@@ -1,6 +1,6 @@
 This repository contains a list of plugins to implement a recommender framework for [Archi](https://github.com/archimatetool/archi). A high level architecture of Archi and our plugin is shown in the picture below.
 
-<img src="/images/Plugin-Architecture.svg" alt="Plugin Architecture" style="width:100px;"/>
+<img src="/images/Plugin-Architecture.svg" alt="Plugin Architecture" style="width:200px;"/>
 
 `com.archimatetool.recommender.model` - Model plugin that contains only abstract classes / interfaces
 
