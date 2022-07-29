@@ -7,5 +7,6 @@ import com.archimatetool.editor.preferences.IPreferenceConstants;
 
 public abstract class RecommenderPreferenceAggregator extends PreferencePage implements IWorkbenchPage, IPreferenceConstants  {
 
+	public abstract void addPreference();
 
 }
