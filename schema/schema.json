@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/archi-recommender/schema#",
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "modelId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "type",
+            "modelId"
+          ]
+        },
+        "score": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "component",
+        "score"
+      ]
+    }
+  ]
+}
