@@ -8,7 +8,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 
-public abstract class RecommenderView extends ViewPart implements ISelectionListener, PropertyChangeListener, IContextProvider, ITabbedPropertySheetPageContributor {	
+public abstract class RecommenderView extends ViewPart implements ISelectionListener, PropertyChangeListener {	
 
 	abstract public TreeViewer getViewer();
 

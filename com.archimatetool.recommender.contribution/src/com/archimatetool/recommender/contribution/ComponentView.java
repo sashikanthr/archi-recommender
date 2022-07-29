@@ -3,7 +3,6 @@ package com.archimatetool.recommender.contribution;
 import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.help.HelpSystem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -21,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.archimatetool.editor.ArchiPlugin;
 import com.archimatetool.editor.model.IEditorModelManager;
 import com.archimatetool.model.IArchimateConcept;
 import com.archimatetool.model.IArchimateModel;
@@ -128,7 +126,7 @@ public class ComponentView extends RecommenderView {
         
      }
 
-	public void initializeRecommendations(Object object) {
+	private void initializeRecommendations(Object object) {
 
 		BusyIndicator.showWhile(null, new Runnable() {
 			
@@ -163,26 +161,6 @@ public class ComponentView extends RecommenderView {
 		if (fViewer != null) {
 			fViewer.getControl().setFocus();
 		}
-	}
-
-	@Override
-	public String getContributorId() {
-		return ArchiPlugin.PLUGIN_ID;
-	}
-
-	@Override
-	public int getContextChangeMask() {
-		return NONE;
-	}
-
-	@Override
-	public org.eclipse.help.IContext getContext(Object target) {
-		return HelpSystem.getContext(HELP_ID);
-	}
-
-	@Override
-	public String getSearchExpression(Object target) {
-		return Messages.Recommender;
 	}
 
 	@Override
