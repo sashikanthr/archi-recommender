@@ -2,7 +2,9 @@ package com.archimatetool.recommender.connector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -33,7 +35,7 @@ public class ConnectorService {
 		subscriberMap.remove(uri);
 	}
 
-	public void addSubscriber(RecommendationSubscriber subscriber, String id) {
+	public void addSubscriber(RecommendationSubscriber subscriber, String id) {		
 		try {
 
 			URI uri = new URIBuilder("http://127.0.0.1:5000/recommendations").addParameter("id", id).build();
@@ -49,5 +51,9 @@ public class ConnectorService {
 	public void sendToConnector(URI uri) {	
 		connector.setURI(uri);
 		connector.send();	
+	}
+	
+	public Map<URI, RecommendationSubscriber> getSubscriberMap() {
+		return subscriberMap;	
 	}
 }

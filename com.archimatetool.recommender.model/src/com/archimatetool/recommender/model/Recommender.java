@@ -1,4 +1,4 @@
-package com.archimatetool.recommender.model;
+ package com.archimatetool.recommender.model;
 
 import java.util.List;
 
