@@ -6,6 +6,7 @@ import com.archimatetool.model.IArchimateModel;
 import com.archimatetool.model.util.ArchimateModelUtils;
 import com.archimatetool.recommender.model.Recommendation;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -20,37 +21,44 @@ public class RecommendationJSONParser {
 	public static List<Recommendation> parseJson(String body) {
 
 		List<Recommendation> recommendations = new ArrayList<>();
-		JsonArray array = new JsonParser().parse(body).getAsJsonArray();
-		array.forEach(element -> {
-			JsonObject object = element.getAsJsonObject();
-			if (object.isJsonObject() && object.has("component")) {
+		JsonElement parsedBody = new JsonParser().parse(body);
+		if (parsedBody != null && parsedBody.isJsonArray()) {
+			JsonArray array = parsedBody.getAsJsonArray();
+			array.forEach(element -> {
+				JsonObject object = element.getAsJsonObject();
+				if (object.isJsonObject() && object.has("component")) {
 
-				JsonObject componentAttrib = object.get("component").getAsJsonObject();
-				String compId = componentAttrib.get("id").getAsString();
-				String modelId = componentAttrib.get("modelId").getAsString();
-				double score;
-
-				if (object.has("score")) {
-					score = object.get("score").getAsDouble();
-				} else {
-					score = 0.0;
-				}
-
-				if (modelId != null && !modelId.isEmpty()) {
-					IArchimateModel model = findModelById(modelId.trim());
-					if (model != null) {
-						IArchimateConcept concept = findComponent(model, compId);
-						if(concept==null) {
-							concept = findComponent(model, compId.replaceFirst("id-", ""));
-						}
-					
-						Recommendation component = new ComponentRecommendation(concept, score);
-						recommendations.add(component);
+					JsonObject componentAttrib = object.get("component").getAsJsonObject();
+					String compId = null;
+					String modelId = null;
+					if (componentAttrib != null) {
+						if(componentAttrib.get("id")!=null) compId = componentAttrib.get("id").getAsString();
+						if(componentAttrib.get("modelId")!=null) modelId = componentAttrib.get("modelId").getAsString();
 					}
-				}
+					double score;
 
-			}
-		});
+					if (object.has("score")) {
+						score = object.get("score").getAsDouble();
+					} else {
+						score = 0.0;
+					}
+
+					if (modelId != null && !modelId.isEmpty() && compId!=null && !compId.isEmpty()) {
+						IArchimateModel model = findModelById(modelId.trim());
+						if (model != null) {
+							IArchimateConcept concept = findComponent(model, compId);
+							if (concept == null) {
+								concept = findComponent(model, compId.replaceFirst("id-", ""));
+							}
+
+							Recommendation component = new ComponentRecommendation(concept, score);
+							recommendations.add(component);
+						}
+					}
+
+				}
+			});
+		}
 		return recommendations;
 	}
 

@@ -46,7 +46,7 @@ public class HttpConnector implements Connector {
 	private void sendSync() {
 		ConnectorService connectorService = ConnectorService.getInstance();	
 		try {						
-			client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(1)).build();
+			client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
 			request = HttpRequest.newBuilder().uri(uri).timeout(Duration.ofSeconds(5)).header("Accept", "application/json")
 					.build();
 			response = client.send(request, BodyHandlers.ofString());
@@ -98,7 +98,7 @@ public class HttpConnector implements Connector {
 	public static void main(String[] args) {
 
 		try {
-		Connector connector = new HttpConnector(new URIBuilder("http://localhost:8080/recommendations").addParameter("id", "id-2b4d61b061724b9198fcbc626f44b5df" ).build());
+		Connector connector = new HttpConnector(new URIBuilder("http://localhost:5000/recommendations").addParameter("id", "id-2b4d61b061724b9198fcbc626f44b5df" ).build());
 		connector.send();
 		} catch(Exception e) {
 			e.printStackTrace();
