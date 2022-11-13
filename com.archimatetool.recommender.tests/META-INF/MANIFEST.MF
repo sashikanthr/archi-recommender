@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JUnit Tests for Recommender Contribution
+Bundle-SymbolicName: com.archimatetool.recommender.contribution.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sashikanth Raavikanti
+Fragment-Host: com.archimatetool.recommender.contribution
+Automatic-Module-Name: com.archimatetool.recommender.contribution.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.junit,
+ com.archimatetool.testsupport,
+ com.archimatetool.model,
+ com.archimatetool.editor,
+ com.archimatetool.recommender.contribution,
+ com.archimatetool.recommender.model
